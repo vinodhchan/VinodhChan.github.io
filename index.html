@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Profile — Demo</title>
+  <meta name="description" content="Type your name to show profile" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <header class="bg-white shadow">
+    <div class="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">
+      <h1 class="text-xl font-semibold">My Profile — Demo</h1>
+      <div class="text-sm text-slate-500">Responsive • HTTPS ready • Static</div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-6">
+    <!-- Input area -->
+    <section class="bg-white p-6 rounded-2xl shadow-sm mb-6">
+      <label class="block text-sm text-slate-600 mb-2">Enter your name</label>
+      <div class="flex gap-3">
+        <input id="nameInput" class="flex-1 px-4 py-2 rounded-md border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="e.g. Vinodh" />
+        <button id="showBtn" class="px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700">Show</button>
+        <button id="clearBtn" class="px-4 py-2 border rounded-md">Clear</button>
+      </div>
+      <p class="mt-3 text-xs text-slate-500">If the name exists in the demo database it will show the stored image & details. Otherwise you can upload and save a new profile locally.</p>
+    </section>
+
+    <!-- Profile card + upload form -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- card -->
+      <div id="cardWrap" class="bg-white p-6 rounded-2xl shadow-sm hidden">
+        <div class="flex items-center gap-4">
+          <img id="profileImg" alt="Profile" class="w-28 h-28 rounded-full object-cover border" src="" />
+          <div>
+            <h2 id="profileName" class="text-2xl font-bold"></h2>
+            <p id="profileTitle" class="text-sm text-slate-600"></p>
+            <p id="profileLocation" class="text-sm text-slate-500 mt-2"></p>
+          </div>
+        </div>
+
+        <div class="mt-4 text-slate-700" id="profileBio"></div>
+
+        <div class="mt-4">
+          <h3 class="text-sm font-semibold text-slate-600">Skills</h3>
+          <div id="skills" class="flex gap-2 mt-2 flex-wrap"></div>
+        </div>
+
+        <div class="mt-6 flex gap-2">
+          <a id="downloadResume" class="px-3 py-2 border rounded-md text-sm" href="#" download>Download Resume</a>
+          <button id="editBtn" class="px-3 py-2 bg-amber-500 text-white rounded-md text-sm">Edit (save)</button>
+        </div>
+      </div>
+
+      <!-- upload / edit form -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm">
+        <h3 class="font-semibold mb-3">Create / Edit profile</h3>
+        <form id="editForm" class="space-y-3">
+          <div>
+            <label class="text-sm text-slate-600">Name</label>
+            <input id="editName" class="w-full px-3 py-2 border rounded-md" required />
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600">Title</label>
+            <input id="editTitle" class="w-full px-3 py-2 border rounded-md" />
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600">Location</label>
+            <input id="editLocation" class="w-full px-3 py-2 border rounded-md" />
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600">Short Bio</label>
+            <textarea id="editBio" rows="3" class="w-full px-3 py-2 border rounded-md"></textarea>
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600">Skills (comma separated)</label>
+            <input id="editSkills" class="w-full px-3 py-2 border rounded-md" />
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600">Profile photo</label>
+            <input id="photoInput" type="file" accept="image/*" class="block mt-2" />
+            <p class="text-xs text-slate-400 mt-1">Local image stored in browser memory (not uploaded anywhere).</p>
+          </div>
+
+          <div class="flex gap-2 mt-4">
+            <button id="saveLocal" type="button" class="px-4 py-2 bg-green-600 text-white rounded-md">Save locally</button>
+            <button id="resetForm" type="button" class="px-4 py-2 border rounded-md">Reset</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- tips -->
+    <section class="mt-6 text-sm text-slate-500">
+      Tip: To publish, push this file to GitHub and enable Pages, or drag & drop into Netlify. Both give HTTPS automatically. See hosting steps below.
+    </section>
+  </main>
+
+  <script>
+    // demo profiles (lowercase keys)
+    const demo = {
+      "vinodh": {
+        name: "Vinodh Chan",
+        title: "Embedded Systems Engineer",
+        location: "Ooty, India",
+        bio: "Engineer focused on embedded Linux, firmware and device networking.",
+        skills: ["C", "Embedded Linux", "Firmware", "Web UI"],
+        img: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect fill='%23038' width='100%'/><text x='50%' y='50%' fill='%23fff' font-size='36' font-family='Arial' dominant-baseline='middle' text-anchor='middle'>Vinodh</text></svg>"
+      },
+      "alice": {
+        name: "Alice Doe",
+        title: "Frontend Designer",
+        location: "Mumbai, India",
+        bio: "Designer building beautiful, accessible web UIs.",
+        skills: ["HTML", "CSS", "Tailwind", "Figma"],
+        img: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect fill='%23ad0' width='100%'/><text x='50%' y='50%' fill='%23000' font-size='36' font-family='Arial' dominant-baseline='middle' text-anchor='middle'>Alice</text></svg>"
+      }
+    };
+
+    // load saved profiles from localStorage
+    const saved = JSON.parse(localStorage.getItem('profiles_v1') || "{}");
+    const profiles = Object.assign({}, demo, saved);
+
+    // UI refs
+    const nameInput = document.getElementById('nameInput');
+    const showBtn = document.getElementById('showBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const cardWrap = document.getElementById('cardWrap');
+    const profileImg = document.getElementById('profileImg');
+    const profileName = document.getElementById('profileName');
+    const profileTitle = document.getElementById('profileTitle');
+    const profileLocation = document.getElementById('profileLocation');
+    const profileBio = document.getElementById('profileBio');
+    const skillsWrap = document.getElementById('skills');
+
+    const editForm = document.getElementById('editForm');
+    const editName = document.getElementById('editName');
+    const editTitle = document.getElementById('editTitle');
+    const editLocation = document.getElementById('editLocation');
+    const editBio = document.getElementById('editBio');
+    const editSkills = document.getElementById('editSkills');
+    const photoInput = document.getElementById('photoInput');
+    const saveLocal = document.getElementById('saveLocal');
+    const resetForm = document.getElementById('resetForm');
+    const editBtn = document.getElementById('editBtn');
+
+    let currentProfileKey = null;
+    let tempPhotoDataUrl = null;
+
+    function renderProfile(profile) {
+      profileImg.src = profile.img;
+      profileName.textContent = profile.name || "";
+      profileTitle.textContent = profile.title || "";
+      profileLocation.textContent = profile.location || "";
+      profileBio.textContent = profile.bio || "";
+      skillsWrap.innerHTML = "";
+      (profile.skills || []).forEach(s => {
+        const el = document.createElement('span');
+        el.className = "text-xs px-2 py-1 border rounded-full text-slate-700";
+        el.textContent = s;
+        skillsWrap.appendChild(el);
+      });
+      cardWrap.classList.remove('hidden');
+    }
+
+    function showByName(raw) {
+      const key = (raw || "").toString().trim().toLowerCase();
+      if (!key) { cardWrap.classList.add('hidden'); return; }
+      if (profiles[key]) {
+        currentProfileKey = key;
+        renderProfile(profiles[key]);
+        // populate edit form
+        editName.value = profiles[key].name || "";
+        editTitle.value = profiles[key].title || "";
+        editLocation.value = profiles[key].location || "";
+        editBio.value = profiles[key].bio || "";
+        editSkills.value = (profiles[key].skills || []).join(", ");
+      } else {
+        // not found -> allow user to create
+        currentProfileKey = key;
+        cardWrap.classList.add('hidden');
+        editName.value = raw;
+        editTitle.value = "";
+        editLocation.value = "";
+        editBio.value = "";
+        editSkills.value = "";
+      }
+    }
+
+    showBtn.addEventListener('click', () => showByName(nameInput.value));
+    nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') showByName(nameInput.value); });
+    clearBtn.addEventListener('click', () => { nameInput.value=''; cardWrap.classList.add('hidden'); });
+
+    photoInput.addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = () => { tempPhotoDataUrl = reader.result; };
+      reader.readAsDataURL(f);
+    });
+
+    saveLocal.addEventListener('click', () => {
+      const key = (editName.value||'').trim().toLowerCase();
+      if (!key) return alert('Please enter a name');
+      const p = {
+        name: editName.value.trim(),
+        title: editTitle.value.trim(),
+        location: editLocation.value.trim(),
+        bio: editBio.value.trim(),
+        skills: (editSkills.value || "").split(',').map(s=>s.trim()).filter(Boolean),
+        img: tempPhotoDataUrl || (profiles[key] && profiles[key].img) || demo['vinodh'].img
+      };
+      profiles[key] = p;
+      // persist (merge with previously saved)
+      const existing = JSON.parse(localStorage.getItem('profiles_v1')||"{}");
+      existing[key] = p;
+      localStorage.setItem('profiles_v1', JSON.stringify(existing));
+      alert('Saved locally in browser (localStorage). To publish, update the site files on GitHub/Netlify.');
+      renderProfile(p);
+      currentProfileKey = key;
+    });
+
+    resetForm.addEventListener('click', () => {
+      editForm.reset();
+      tempPhotoDataUrl = null;
+    });
+
+    editBtn.addEventListener('click', () => {
+      if (!currentProfileKey) return alert('Show a profile first.');
+      // copy current card to edit form (already handled when showing)
+      window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
+    });
+
+    // On first load, if URL contains ?name=..., show it
+    const params = new URLSearchParams(location.search);
+    if (params.get('name')) {
+      nameInput.value = params.get('name');
+      showByName(params.get('name'));
+    }
+  </script>
+</body>
+</html>
